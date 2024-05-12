@@ -6,11 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 
-class DeviceFoundReceiver(private val onDeviceFound: (BluetoothDevice) -> Unit) :
-    BroadcastReceiver() {
+class DeviceFoundReceiver(
+    private val onDeviceFound: (BluetoothDevice) -> Unit
+): BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        when (intent?.action) {
+        when(intent?.action) {
             BluetoothDevice.ACTION_FOUND -> {
                 val device = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     intent.getParcelableExtra(
@@ -18,9 +19,7 @@ class DeviceFoundReceiver(private val onDeviceFound: (BluetoothDevice) -> Unit) 
                         BluetoothDevice::class.java
                     )
                 } else {
-                    intent.getParcelableExtra(
-                        BluetoothDevice.EXTRA_DEVICE
-                    )
+                    intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                 }
                 device?.let(onDeviceFound)
             }

@@ -1,21 +1,26 @@
 package com.techuntried.bluetooth.domain
 
+
+import com.techuntried.bluetooth.domain.ConnectionResult
 import com.techuntried.bluetooth.domain.model.BluetoothDeviceItem
+import com.techuntried.bluetooth.domain.model.BluetoothMessage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 
 interface BluetoothController {
+    val isConnected: StateFlow<Boolean>
     val scannedDevices: StateFlow<List<BluetoothDeviceItem>>
     val pairedDevices: StateFlow<List<BluetoothDeviceItem>>
-    val isConnected :StateFlow<Boolean>
-    val error:SharedFlow<String>
+    val errors: SharedFlow<String>
 
     fun startDiscovery()
     fun stopDiscovery()
 
     fun startBluetoothServer(): Flow<ConnectionResult>
-    fun connectToDevice(deviceItem: BluetoothDeviceItem):Flow<ConnectionResult>
+    fun connectToDevice(device: BluetoothDeviceItem): Flow<ConnectionResult>
+
+    suspend fun trySendMessage(message: String): BluetoothMessage?
 
     fun closeConnection()
     fun release()

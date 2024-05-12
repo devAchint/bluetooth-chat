@@ -15,22 +15,27 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.techuntried.bluetooth.R
 import com.techuntried.bluetooth.domain.model.BluetoothDeviceItem
 import com.techuntried.bluetooth.ui.BluetoothViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
 
 @AndroidEntryPoint
 class FragmentHome : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: BluetoothViewModel by viewModels()
+    private val viewModel: BluetoothViewModel by activityViewModels()
     private lateinit var pairedDeviceAdapter: BluetoothDeviceAdapter
     private lateinit var scanDeviceAdapter: BluetoothDeviceAdapter
 
@@ -95,15 +100,18 @@ class FragmentHome : Fragment() {
                 viewModel.state.collect { state ->
                     scanDeviceAdapter.submitList(state.scannedDevices)
                     pairedDeviceAdapter.submitList(state.pairedDevices)
+                    when {
+                        state.isConnecting -> {
+                            Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+                        }
 
-                    if (state.isConnected) {
-                        Toast.makeText(context, "connected", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(context, "not connected", Toast.LENGTH_SHORT).show()
-                    }
+                        state.isConnected -> {
+                            findNavController().navigate(R.id.fragmentChat)
+                        }
 
-                    if (state.isConnecting) {
-                        Toast.makeText(context, "connnecting", Toast.LENGTH_SHORT).show()
+                        else -> {
+
+                        }
                     }
                 }
 
@@ -135,10 +143,10 @@ class FragmentHome : Fragment() {
 
     private fun setOnClickListeners() {
         binding.scanDevicesButton.setOnClickListener {
-            viewModel.startDiscovery()
+            viewModel.startScan()
         }
         binding.startServer.setOnClickListener {
-            viewModel.waitForIncomingConnection()
+            viewModel.waitForIncomingConnections()
         }
     }
 

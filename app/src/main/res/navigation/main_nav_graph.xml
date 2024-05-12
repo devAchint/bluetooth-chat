@@ -9,5 +9,13 @@
         android:id="@+id/fragmentHome"
         android:name="com.techuntried.bluetooth.ui.home.FragmentHome"
         android:label="FragmentHome"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_fragmentHome_to_fragmentChat"
+            app:destination="@id/fragmentChat" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentChat"
+        android:name="com.techuntried.bluetooth.ui.chat.FragmentChat"
+        android:label="FragmentChat" />
 </navigation>
