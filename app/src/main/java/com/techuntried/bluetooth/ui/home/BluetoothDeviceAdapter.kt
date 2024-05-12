@@ -9,7 +9,7 @@ import com.techuntried.bluetooth.databinding.BluetoothDeviceItemBinding
 import com.techuntried.bluetooth.domain.model.BluetoothDeviceItem
 
 
-class BluetoothDeviceAdapter :
+class BluetoothDeviceAdapter(private val onDeviceClicked: OnDeviceClicked) :
     ListAdapter<BluetoothDeviceItem, BluetoothDeviceAdapter.MyViewHolder>(BluetoothDeviceDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -17,17 +17,20 @@ class BluetoothDeviceAdapter :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position),onDeviceClicked)
     }
 
     class MyViewHolder private constructor(private val binding: BluetoothDeviceItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(
-            item: BluetoothDeviceItem
+            item: BluetoothDeviceItem,
+            onDeviceClicked: OnDeviceClicked
         ) {
             binding.item = item
-
+            binding.root.setOnClickListener {
+                onDeviceClicked.onClick(item)
+            }
         }
 
         companion object {
@@ -42,6 +45,9 @@ class BluetoothDeviceAdapter :
 
 }
 
+interface OnDeviceClicked {
+    fun onClick(deviceItem: BluetoothDeviceItem)
+}
 
 class BluetoothDeviceDiffUtil : DiffUtil.ItemCallback<BluetoothDeviceItem>() {
     override fun areItemsTheSame(
