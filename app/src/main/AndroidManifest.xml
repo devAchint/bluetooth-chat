@@ -9,7 +9,7 @@
     <uses-permission
         android:name="android.permission.BLUETOOTH_SCAN"
         android:usesPermissionFlags="neverForLocation" />
-    <uses-permission android:name="android.hardware.bluetooth" />
+    <uses-feature android:name="android.hardware.bluetooth" />
 
     <application
         android:name=".MyApplication"
